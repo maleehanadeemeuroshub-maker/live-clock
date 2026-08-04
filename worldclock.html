@@ -410,6 +410,7 @@
     { id: "Europe/London", city: "London", label: "GMT / BST" },
     { id: "Europe/Paris", city: "Paris", label: "Central European Time" },
     { id: "Europe/Berlin", city: "Berlin", label: "Central European Time" },
+    { id: "Europe/Rome", city: "Rome", label: "Central European Time" },
     { id: "Europe/Moscow", city: "Moscow", label: "Moscow Time" },
     { id: "Africa/Cairo", city: "Cairo", label: "Eastern European Time" },
     { id: "Asia/Karachi", city: "Karachi", label: "Pakistan Time" },
@@ -430,7 +431,7 @@
     format: "24",
     highlightDaytime: true,
     homeTz: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
-    pinned: ["America/New_York", "Europe/London", "Asia/Tokyo", "Australia/Sydney"]
+    pinned: ["America/New_York", "Europe/London", "Europe/Rome", "Asia/Tokyo", "Australia/Sydney"]
   };
 
   /* ================= world clock grid ================= */
