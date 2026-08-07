@@ -15,6 +15,13 @@
     --card-bg: #111111;
     --border: #232323;
     --muted: #9a9a9a;
+    --surface-1: #131313;
+    --surface-2: #101010;
+    --hover-bg: #1c1c1c;
+    --switch-off: #333333;
+    --input-bg: #161616;
+    --text-secondary: #eeeeee;
+    --text-tertiary: #cccccc;
   }
 
   *{ box-sizing: border-box; }
@@ -22,9 +29,10 @@
     margin: 0;
     height: 100%;
     background: var(--bg);
-    color: #fff;
+    color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     overflow: hidden;
+    transition: background 0.25s ease, color 0.25s ease;
   }
 
   .app{ display: flex; flex-direction: column; height: 100%; }
@@ -57,34 +65,36 @@
   .nav-wrap{ position: relative; }
   .nav-dropdown-btn{
     display: flex; align-items: center; gap: 8px;
-    background: #161616; border: 1px solid var(--border); color: #eee;
+    background: var(--input-bg); border: 1px solid var(--border); color: var(--text-secondary);
     padding: 9px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
   }
   .nav-dropdown-btn svg{ width: 12px; height: 12px; transition: transform .2s ease; }
   .nav-dropdown-btn.open svg{ transform: rotate(180deg); }
   .nav-menu{
     position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-    width: 190px; background: #101010; border: 1px solid var(--border); border-radius: 12px;
+    width: 190px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
     padding: 6px; display: none; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
   }
   .nav-menu.open{ display: block; }
   .nav-item{
     display: block; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500;
-    color: #d8d8d8; text-decoration: none; cursor: pointer;
+    color: var(--text-tertiary); text-decoration: none; cursor: pointer;
   }
-  .nav-item:hover{ background: #1a1a1a; }
+  .nav-item:hover{ background: var(--hover-bg); }
   .nav-item.selected{ background: rgba(47,127,255,0.14); color: var(--blue); font-weight: 600; }
 
   .icon-row{ display: flex; gap: 10px; }
-  .hamburger-btn{ display: none; }
   .icon-btn{
     width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border);
-    background: #131313; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: #eee;
+    background: var(--surface-1); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary);
   }
-  .icon-btn:hover{ background: #1c1c1c; }
+  .icon-btn:hover{ background: var(--hover-bg); }
   .icon-btn.active{ background: var(--blue); border-color: var(--blue); color: #fff; }
   .icon-btn svg{ width: 18px; height: 18px; }
+  .icon-btn .icon-moon{ display: none; }
+  .icon-btn.is-light .icon-sun{ display: none; }
+  .icon-btn.is-light .icon-moon{ display: block; }
 
   .body-row{ flex: 1; display: flex; min-height: 0; }
 
@@ -163,16 +173,16 @@
     border: none;
     padding: 2px 6px;
   }
-  .clock-card .remove-btn:hover{ color: #fff; }
+  .clock-card .remove-btn:hover{ color: var(--fg); }
   .clock-card.daytime{ box-shadow: inset 0 0 0 1px rgba(255,176,32,0.25); }
 
   .add-city-row{ display: flex; gap: 10px; align-items: center; }
   .add-city-row select{
     flex: 1;
     max-width: 320px;
-    background: #161616;
+    background: var(--input-bg);
     border: 1px solid var(--border);
-    color: #eee;
+    color: var(--text-secondary);
     padding: 10px 12px;
     border-radius: 10px;
     font-size: 14px;
@@ -188,6 +198,67 @@
     cursor: pointer;
   }
   .add-city-row button:hover{ filter: brightness(1.08); }
+
+  /* ---- searchable city combo ---- */
+  .search-combo{ position: relative; flex: 1; max-width: 360px; }
+  .search-combo input{
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 10px 36px 10px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+  }
+  .search-combo input:focus{ border-color: var(--blue); }
+  .search-combo::after{
+    content: "";
+    position: absolute;
+    right: 12px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px;
+    border: 1.6px solid var(--muted);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .search-combo::before{
+    content: "";
+    position: absolute;
+    right: 8px; top: 50%; transform: translateY(9px) rotate(45deg);
+    width: 6px; height: 1.6px;
+    background: var(--muted);
+    pointer-events: none;
+  }
+  .search-dropdown{
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px;
+    display: none;
+    z-index: 50;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .search-dropdown.open{ display: block; }
+  .search-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13.5px;
+  }
+  .search-item:hover, .search-item.active{ background: var(--hover-bg); }
+  .search-item-city{ color: var(--text-secondary); font-weight: 600; }
+  .search-item-country{ color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  .search-empty{ padding: 10px; color: var(--muted); font-size: 13px; text-align: center; }
+  .home-tz-select.search-combo{ max-width: none; }
 
   /* ---- converter ---- */
   .converter{
@@ -214,9 +285,9 @@
     letter-spacing: 0.5px;
   }
   .converter-field select, .converter-field input{
-    background: #161616;
+    background: var(--input-bg);
     border: 1px solid var(--border);
-    color: #eee;
+    color: var(--text-secondary);
     padding: 10px 12px;
     border-radius: 10px;
     font-size: 14px;
@@ -246,14 +317,14 @@
     height: 36px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: #161616;
-    color: #eee;
+    background: var(--input-bg);
+    color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .swap-btn:hover{ background: #1c1c1c; }
+  .swap-btn:hover{ background: var(--hover-bg); }
 
   /* ---------- sidebar ---------- */
   .sidebar{
@@ -270,7 +341,7 @@
   .segmented{ display: flex; gap: 8px; }
   .segmented button{
     flex: 1; padding: 8px 0; border-radius: 8px; border: 1px solid var(--border);
-    background: #161616; color: #ccc; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: var(--input-bg); color: var(--text-tertiary); font-size: 13px; font-weight: 600; cursor: pointer;
   }
   .segmented button.selected{ background: var(--blue); border-color: var(--blue); color: #fff; }
 
@@ -279,7 +350,7 @@
     font-size: 14px; font-weight: 600;
   }
   .switch{
-    position: relative; width: 42px; height: 24px; border-radius: 999px; background: #333; cursor: pointer;
+    position: relative; width: 42px; height: 24px; border-radius: 999px; background: var(--switch-off); cursor: pointer;
   }
   .switch.on{ background: var(--blue); }
   .switch::after{
@@ -290,9 +361,9 @@
 
   .home-tz-select{
     width: 100%;
-    background: #161616;
+    background: var(--input-bg);
     border: 1px solid var(--border);
-    color: #eee;
+    color: var(--text-secondary);
     padding: 10px 12px;
     border-radius: 10px;
     font-size: 14px;
@@ -332,21 +403,7 @@
     .brand{ font-size: 0; gap: 0; }
     .brand-icon{ width: 30px; height: 30px; }
     .nav-dropdown-btn{ padding: 7px 10px; font-size: 12px; gap: 5px; }
-    .hamburger-btn{ display: flex; }
-    .icon-row{
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 12px;
-      gap: 8px;
-      background: #101010;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px;
-      display: none;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      z-index: 50;
-    }
-    .icon-row.open{ display: flex; }
+    .icon-row{ gap: 8px; }
     .icon-btn{ width: 34px; height: 34px; border-radius: 8px; }
     .icon-btn svg{ width: 16px; height: 16px; }
     .stage{ padding: 16px; gap: 24px; }
@@ -354,7 +411,7 @@
     .clock-card{ padding: 14px; }
     .clock-card .time-big{ font-size: 24px; }
     .add-city-row{ flex-wrap: wrap; }
-    .add-city-row select{ max-width: 100%; flex: 1 1 180px; }
+    .add-city-row .search-combo{ max-width: 100%; flex: 1 1 180px; }
     .converter-row{ grid-template-columns: 1fr; }
     .converter-result{ flex-wrap: wrap; gap: 8px; }
   }
@@ -380,15 +437,13 @@
       </div>
     </div>
 
-    <button class="icon-btn hamburger-btn" id="hamburger-btn" title="Menu">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
     <div class="icon-row" id="icon-row">
       <div class="icon-btn" id="fullscreen-btn" title="Fullscreen">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div class="icon-btn" id="wake-btn" title="Keep screen on">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <div class="icon-btn" id="theme-toggle-btn" title="Toggle light / dark theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1Z" fill="currentColor"/></svg>
       </div>
       <div class="icon-btn" id="settings-btn" title="Settings">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a7.6 7.6 0 000-2l2-1.6-2-3.4-2.4.6a7.7 7.7 0 00-1.7-1L14.8 3h-4l-.5 2.6a7.7 7.7 0 00-1.7 1l-2.4-.6-2 3.4L6.2 11a7.6 7.6 0 000 2l-2 1.6 2 3.4 2.4-.6a7.7 7.7 0 001.7 1l.5 2.6h4l.5-2.6a7.7 7.7 0 001.7-1l2.4.6 2-3.4-2-1.6z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
@@ -403,8 +458,10 @@
         <div class="section-title">World Clock</div>
         <div class="clock-grid" id="clock-grid"></div>
         <div class="add-city-row" style="margin-top:14px;">
-          <select id="add-city-select"></select>
-          <button id="add-city-btn">Add City</button>
+          <div class="search-combo" id="add-city-combo">
+            <input type="text" id="add-city-input" placeholder="Search any city or country…" autocomplete="off">
+            <div class="search-dropdown" id="add-city-dropdown"></div>
+          </div>
         </div>
       </div>
 
@@ -414,7 +471,10 @@
           <div class="converter-row">
             <div class="converter-field">
               <label>From</label>
-              <select id="from-zone"></select>
+              <div class="search-combo" id="from-zone-combo">
+                <input type="text" id="from-zone-input" placeholder="Search city or country…" autocomplete="off">
+                <div class="search-dropdown" id="from-zone-dropdown"></div>
+              </div>
             </div>
             <div class="converter-field">
               <label>Date &amp; Time</label>
@@ -426,7 +486,10 @@
           </button>
           <div class="converter-field">
             <label>To</label>
-            <select id="to-zone"></select>
+            <div class="search-combo" id="to-zone-combo">
+              <input type="text" id="to-zone-input" placeholder="Search city or country…" autocomplete="off">
+              <div class="search-dropdown" id="to-zone-dropdown"></div>
+            </div>
           </div>
           <div class="converter-result">
             <div>
@@ -451,7 +514,10 @@
       </div>
 
       <h3>Home Time Zone</h3>
-      <select class="home-tz-select" id="home-tz-select"></select>
+      <div class="search-combo home-tz-select" id="home-tz-combo">
+        <input type="text" id="home-tz-input" placeholder="Search city or country…" autocomplete="off">
+        <div class="search-dropdown" id="home-tz-dropdown"></div>
+      </div>
 
       <h3></h3>
       <div class="toggle-row">
@@ -466,32 +532,278 @@
 <script>
   /* ================= time zone catalog ================= */
   const zones = [
-    { id: "Pacific/Honolulu", city: "Honolulu", label: "Hawaii Time" },
-    { id: "America/Anchorage", city: "Anchorage", label: "Alaska Time" },
-    { id: "America/Los_Angeles", city: "Los Angeles", label: "Pacific Time" },
-    { id: "America/Denver", city: "Denver", label: "Mountain Time" },
-    { id: "America/Chicago", city: "Chicago", label: "Central Time" },
-    { id: "America/New_York", city: "New York", label: "Eastern Time" },
-    { id: "America/Sao_Paulo", city: "São Paulo", label: "Brasília Time" },
+    // North America
+    { id: "Pacific/Honolulu", city: "Honolulu", label: "United States" },
+    { id: "America/Anchorage", city: "Anchorage", label: "United States" },
+    { id: "America/Los_Angeles", city: "Los Angeles", label: "United States" },
+    { id: "America/Los_Angeles-SF", tz: "America/Los_Angeles", city: "San Francisco", label: "United States" },
+    { id: "America/Los_Angeles-Seattle", tz: "America/Los_Angeles", city: "Seattle", label: "United States" },
+    { id: "America/Los_Angeles-LasVegas", tz: "America/Los_Angeles", city: "Las Vegas", label: "United States" },
+    { id: "America/Denver", city: "Denver", label: "United States" },
+    { id: "America/Phoenix", city: "Phoenix", label: "United States" },
+    { id: "America/Chicago", city: "Chicago", label: "United States" },
+    { id: "America/Chicago-Houston", tz: "America/Chicago", city: "Houston", label: "United States" },
+    { id: "America/Chicago-Dallas", tz: "America/Chicago", city: "Dallas", label: "United States" },
+    { id: "America/New_York", city: "New York", label: "United States" },
+    { id: "America/New_York-DC", tz: "America/New_York", city: "Washington, D.C.", label: "United States" },
+    { id: "America/New_York-Miami", tz: "America/New_York", city: "Miami", label: "United States" },
+    { id: "America/New_York-Boston", tz: "America/New_York", city: "Boston", label: "United States" },
+    { id: "America/New_York-Atlanta", tz: "America/New_York", city: "Atlanta", label: "United States" },
+    { id: "America/Toronto", city: "Toronto", label: "Canada" },
+    { id: "America/Toronto-Montreal", tz: "America/Toronto", city: "Montreal", label: "Canada" },
+    { id: "America/Vancouver", city: "Vancouver", label: "Canada" },
+    { id: "America/Edmonton", city: "Edmonton", label: "Canada" },
+    { id: "America/Edmonton-Calgary", tz: "America/Edmonton", city: "Calgary", label: "Canada" },
+    { id: "America/Winnipeg", city: "Winnipeg", label: "Canada" },
+    { id: "America/Halifax", city: "Halifax", label: "Canada" },
+    { id: "America/St_Johns", city: "St. John's", label: "Canada" },
+    { id: "America/Mexico_City", city: "Mexico City", label: "Mexico" },
+    { id: "America/Tijuana", city: "Tijuana", label: "Mexico" },
+    { id: "America/Cancun", city: "Cancún", label: "Mexico" },
+    // Central America & Caribbean
+    { id: "America/Guatemala", city: "Guatemala City", label: "Guatemala" },
+    { id: "America/Belize", city: "Belize City", label: "Belize" },
+    { id: "America/Tegucigalpa", city: "Tegucigalpa", label: "Honduras" },
+    { id: "America/Managua", city: "Managua", label: "Nicaragua" },
+    { id: "America/El_Salvador", city: "San Salvador", label: "El Salvador" },
+    { id: "America/Costa_Rica", city: "San José", label: "Costa Rica" },
+    { id: "America/Panama", city: "Panama City", label: "Panama" },
+    { id: "America/Havana", city: "Havana", label: "Cuba" },
+    { id: "America/Jamaica", city: "Kingston", label: "Jamaica" },
+    { id: "America/Nassau", city: "Nassau", label: "Bahamas" },
+    { id: "America/Port-au-Prince", city: "Port-au-Prince", label: "Haiti" },
+    { id: "America/Santo_Domingo", city: "Santo Domingo", label: "Dominican Republic" },
+    { id: "America/Puerto_Rico", city: "San Juan", label: "Puerto Rico" },
+    { id: "America/Barbados", city: "Bridgetown", label: "Barbados" },
+    { id: "America/Port_of_Spain", city: "Port of Spain", label: "Trinidad and Tobago" },
+    // South America
+    { id: "America/Bogota", city: "Bogotá", label: "Colombia" },
+    { id: "America/Caracas", city: "Caracas", label: "Venezuela" },
+    { id: "America/Guyana", city: "Georgetown", label: "Guyana" },
+    { id: "America/Paramaribo", city: "Paramaribo", label: "Suriname" },
+    { id: "America/Lima", city: "Lima", label: "Peru" },
+    { id: "America/La_Paz", city: "La Paz", label: "Bolivia" },
+    { id: "America/Santiago", city: "Santiago", label: "Chile" },
+    { id: "America/Asuncion", city: "Asunción", label: "Paraguay" },
+    { id: "America/Montevideo", city: "Montevideo", label: "Uruguay" },
+    { id: "America/Argentina/Buenos_Aires", city: "Buenos Aires", label: "Argentina" },
+    { id: "America/Sao_Paulo", city: "São Paulo", label: "Brazil" },
+    { id: "America/Sao_Paulo-Rio", tz: "America/Sao_Paulo", city: "Rio de Janeiro", label: "Brazil" },
+    { id: "America/Sao_Paulo-Brasilia", tz: "America/Sao_Paulo", city: "Brasília", label: "Brazil" },
+    { id: "America/Manaus", city: "Manaus", label: "Brazil" },
+    { id: "America/Fortaleza", city: "Fortaleza", label: "Brazil" },
+    { id: "America/Guayaquil", city: "Quito", label: "Ecuador" },
+    // Europe
     { id: "UTC", city: "UTC", label: "Coordinated Universal Time" },
-    { id: "Europe/London", city: "London", label: "GMT / BST" },
-    { id: "Europe/Paris", city: "Paris", label: "Central European Time" },
-    { id: "Europe/Berlin", city: "Berlin", label: "Central European Time" },
-    { id: "Europe/Rome", city: "Rome", label: "Central European Time" },
-    { id: "Europe/Rome-Siena", tz: "Europe/Rome", city: "Siena", label: "Central European Time" },
-    { id: "Europe/Moscow", city: "Moscow", label: "Moscow Time" },
-    { id: "Africa/Cairo", city: "Cairo", label: "Eastern European Time" },
-    { id: "Asia/Karachi", city: "Karachi", label: "Pakistan Time" },
-    { id: "Asia/Kolkata", city: "New Delhi", label: "India Time" },
-    { id: "Asia/Dhaka", city: "Dhaka", label: "Bangladesh Time" },
-    { id: "Asia/Bangkok", city: "Bangkok", label: "Indochina Time" },
-    { id: "Asia/Shanghai", city: "Shanghai", label: "China Time" },
-    { id: "Asia/Tokyo", city: "Tokyo", label: "Japan Time" },
-    { id: "Asia/Seoul", city: "Seoul", label: "Korea Time" },
-    { id: "Australia/Sydney", city: "Sydney", label: "Australian Eastern Time" },
-    { id: "Pacific/Auckland", city: "Auckland", label: "New Zealand Time" },
-    { id: "Asia/Dubai", city: "Dubai", label: "Gulf Standard Time" },
-    { id: "Asia/Singapore", city: "Singapore", label: "Singapore Time" }
+    { id: "Europe/London", city: "London", label: "United Kingdom" },
+    { id: "Europe/London-Manchester", tz: "Europe/London", city: "Manchester", label: "United Kingdom" },
+    { id: "Europe/London-Birmingham", tz: "Europe/London", city: "Birmingham", label: "United Kingdom" },
+    { id: "Europe/London-Edinburgh", tz: "Europe/London", city: "Edinburgh", label: "United Kingdom" },
+    { id: "Europe/London-Glasgow", tz: "Europe/London", city: "Glasgow", label: "United Kingdom" },
+    { id: "Europe/Dublin", city: "Dublin", label: "Ireland" },
+    { id: "Europe/Lisbon", city: "Lisbon", label: "Portugal" },
+    { id: "Europe/Madrid", city: "Madrid", label: "Spain" },
+    { id: "Europe/Madrid-Barcelona", tz: "Europe/Madrid", city: "Barcelona", label: "Spain" },
+    { id: "Europe/Madrid-Valencia", tz: "Europe/Madrid", city: "Valencia", label: "Spain" },
+    { id: "Europe/Madrid-Seville", tz: "Europe/Madrid", city: "Seville", label: "Spain" },
+    { id: "Atlantic/Canary", city: "Las Palmas", label: "Spain" },
+    { id: "Europe/Paris", city: "Paris", label: "France" },
+    { id: "Europe/Paris-Marseille", tz: "Europe/Paris", city: "Marseille", label: "France" },
+    { id: "Europe/Paris-Lyon", tz: "Europe/Paris", city: "Lyon", label: "France" },
+    { id: "Europe/Paris-Nice", tz: "Europe/Paris", city: "Nice", label: "France" },
+    { id: "Europe/Brussels", city: "Brussels", label: "Belgium" },
+    { id: "Europe/Amsterdam", city: "Amsterdam", label: "Netherlands" },
+    { id: "Europe/Luxembourg", city: "Luxembourg", label: "Luxembourg" },
+    { id: "Europe/Berlin", city: "Berlin", label: "Germany" },
+    { id: "Europe/Berlin-Munich", tz: "Europe/Berlin", city: "Munich", label: "Germany" },
+    { id: "Europe/Berlin-Frankfurt", tz: "Europe/Berlin", city: "Frankfurt", label: "Germany" },
+    { id: "Europe/Berlin-Hamburg", tz: "Europe/Berlin", city: "Hamburg", label: "Germany" },
+    { id: "Europe/Berlin-Cologne", tz: "Europe/Berlin", city: "Cologne", label: "Germany" },
+    { id: "Europe/Zurich", city: "Zurich", label: "Switzerland" },
+    { id: "Europe/Vienna", city: "Vienna", label: "Austria" },
+    { id: "Europe/Rome", city: "Rome", label: "Italy" },
+    { id: "Europe/Rome-Siena", tz: "Europe/Rome", city: "Siena", label: "Italy" },
+    { id: "Europe/Rome-Milan", tz: "Europe/Rome", city: "Milan", label: "Italy" },
+    { id: "Europe/Rome-Naples", tz: "Europe/Rome", city: "Naples", label: "Italy" },
+    { id: "Europe/Rome-Turin", tz: "Europe/Rome", city: "Turin", label: "Italy" },
+    { id: "Europe/Rome-Venice", tz: "Europe/Rome", city: "Venice", label: "Italy" },
+    { id: "Europe/Rome-Florence", tz: "Europe/Rome", city: "Florence", label: "Italy" },
+    { id: "Europe/Rome-Palermo", tz: "Europe/Rome", city: "Palermo", label: "Italy" },
+    { id: "Europe/Rome-Bologna", tz: "Europe/Rome", city: "Bologna", label: "Italy" },
+    { id: "Europe/Copenhagen", city: "Copenhagen", label: "Denmark" },
+    { id: "Europe/Oslo", city: "Oslo", label: "Norway" },
+    { id: "Europe/Stockholm", city: "Stockholm", label: "Sweden" },
+    { id: "Europe/Helsinki", city: "Helsinki", label: "Finland" },
+    { id: "Atlantic/Reykjavik", city: "Reykjavik", label: "Iceland" },
+    { id: "Europe/Warsaw", city: "Warsaw", label: "Poland" },
+    { id: "Europe/Prague", city: "Prague", label: "Czechia" },
+    { id: "Europe/Bratislava", city: "Bratislava", label: "Slovakia" },
+    { id: "Europe/Budapest", city: "Budapest", label: "Hungary" },
+    { id: "Europe/Bucharest", city: "Bucharest", label: "Romania" },
+    { id: "Europe/Sofia", city: "Sofia", label: "Bulgaria" },
+    { id: "Europe/Belgrade", city: "Belgrade", label: "Serbia" },
+    { id: "Europe/Zagreb", city: "Zagreb", label: "Croatia" },
+    { id: "Europe/Sarajevo", city: "Sarajevo", label: "Bosnia and Herzegovina" },
+    { id: "Europe/Ljubljana", city: "Ljubljana", label: "Slovenia" },
+    { id: "Europe/Skopje", city: "Skopje", label: "North Macedonia" },
+    { id: "Europe/Tirane", city: "Tirana", label: "Albania" },
+    { id: "Europe/Podgorica", city: "Podgorica", label: "Montenegro" },
+    { id: "Europe/Athens", city: "Athens", label: "Greece" },
+    { id: "Europe/Chisinau", city: "Chisinau", label: "Moldova" },
+    { id: "Europe/Kyiv", city: "Kyiv", label: "Ukraine" },
+    { id: "Europe/Minsk", city: "Minsk", label: "Belarus" },
+    { id: "Europe/Vilnius", city: "Vilnius", label: "Lithuania" },
+    { id: "Europe/Riga", city: "Riga", label: "Latvia" },
+    { id: "Europe/Tallinn", city: "Tallinn", label: "Estonia" },
+    { id: "Europe/Moscow", city: "Moscow", label: "Russia" },
+    { id: "Europe/Moscow-SPB", tz: "Europe/Moscow", city: "Saint Petersburg", label: "Russia" },
+    { id: "Europe/Kaliningrad", city: "Kaliningrad", label: "Russia" },
+    { id: "Asia/Yekaterinburg", city: "Yekaterinburg", label: "Russia" },
+    { id: "Asia/Novosibirsk", city: "Novosibirsk", label: "Russia" },
+    { id: "Asia/Vladivostok", city: "Vladivostok", label: "Russia" },
+    { id: "Europe/Istanbul", city: "Istanbul", label: "Turkey" },
+    { id: "Europe/Istanbul-Ankara", tz: "Europe/Istanbul", city: "Ankara", label: "Turkey" },
+    { id: "Europe/Malta", city: "Valletta", label: "Malta" },
+    { id: "Europe/Nicosia", city: "Nicosia", label: "Cyprus" },
+    { id: "Europe/Monaco", city: "Monaco", label: "Monaco" },
+    { id: "Europe/Andorra", city: "Andorra la Vella", label: "Andorra" },
+    { id: "Europe/Gibraltar", city: "Gibraltar", label: "Gibraltar" },
+    // Africa
+    { id: "Africa/Casablanca", city: "Casablanca", label: "Morocco" },
+    { id: "Africa/Algiers", city: "Algiers", label: "Algeria" },
+    { id: "Africa/Tunis", city: "Tunis", label: "Tunisia" },
+    { id: "Africa/Tripoli", city: "Tripoli", label: "Libya" },
+    { id: "Africa/Cairo", city: "Cairo", label: "Egypt" },
+    { id: "Africa/Cairo-Alexandria", tz: "Africa/Cairo", city: "Alexandria", label: "Egypt" },
+    { id: "Africa/Khartoum", city: "Khartoum", label: "Sudan" },
+    { id: "Africa/Addis_Ababa", city: "Addis Ababa", label: "Ethiopia" },
+    { id: "Africa/Nairobi", city: "Nairobi", label: "Kenya" },
+    { id: "Africa/Kampala", city: "Kampala", label: "Uganda" },
+    { id: "Africa/Dar_es_Salaam", city: "Dar es Salaam", label: "Tanzania" },
+    { id: "Africa/Kigali", city: "Kigali", label: "Rwanda" },
+    { id: "Africa/Mogadishu", city: "Mogadishu", label: "Somalia" },
+    { id: "Africa/Djibouti", city: "Djibouti", label: "Djibouti" },
+    { id: "Africa/Accra", city: "Accra", label: "Ghana" },
+    { id: "Africa/Abidjan", city: "Abidjan", label: "Côte d'Ivoire" },
+    { id: "Africa/Lagos", city: "Lagos", label: "Nigeria" },
+    { id: "Africa/Lagos-Abuja", tz: "Africa/Lagos", city: "Abuja", label: "Nigeria" },
+    { id: "Africa/Bamako", city: "Bamako", label: "Mali" },
+    { id: "Africa/Dakar", city: "Dakar", label: "Senegal" },
+    { id: "Africa/Conakry", city: "Conakry", label: "Guinea" },
+    { id: "Africa/Freetown", city: "Freetown", label: "Sierra Leone" },
+    { id: "Africa/Monrovia", city: "Monrovia", label: "Liberia" },
+    { id: "Africa/Ouagadougou", city: "Ouagadougou", label: "Burkina Faso" },
+    { id: "Africa/Niamey", city: "Niamey", label: "Niger" },
+    { id: "Africa/Ndjamena", city: "N'Djamena", label: "Chad" },
+    { id: "Africa/Douala", city: "Douala", label: "Cameroon" },
+    { id: "Africa/Bangui", city: "Bangui", label: "Central African Republic" },
+    { id: "Africa/Brazzaville", city: "Brazzaville", label: "Republic of the Congo" },
+    { id: "Africa/Kinshasa", city: "Kinshasa", label: "DR Congo" },
+    { id: "Africa/Lubumbashi", city: "Lubumbashi", label: "DR Congo" },
+    { id: "Africa/Libreville", city: "Libreville", label: "Gabon" },
+    { id: "Africa/Malabo", city: "Malabo", label: "Equatorial Guinea" },
+    { id: "Africa/Luanda", city: "Luanda", label: "Angola" },
+    { id: "Africa/Windhoek", city: "Windhoek", label: "Namibia" },
+    { id: "Africa/Gaborone", city: "Gaborone", label: "Botswana" },
+    { id: "Africa/Harare", city: "Harare", label: "Zimbabwe" },
+    { id: "Africa/Lusaka", city: "Lusaka", label: "Zambia" },
+    { id: "Africa/Maputo", city: "Maputo", label: "Mozambique" },
+    { id: "Africa/Blantyre", city: "Blantyre", label: "Malawi" },
+    { id: "Africa/Johannesburg", city: "Johannesburg", label: "South Africa" },
+    { id: "Africa/Johannesburg-CapeTown", tz: "Africa/Johannesburg", city: "Cape Town", label: "South Africa" },
+    { id: "Africa/Maseru", city: "Maseru", label: "Lesotho" },
+    { id: "Africa/Mbabane", city: "Mbabane", label: "Eswatini" },
+    { id: "Indian/Antananarivo", city: "Antananarivo", label: "Madagascar" },
+    { id: "Indian/Mauritius", city: "Port Louis", label: "Mauritius" },
+    // Middle East
+    { id: "Asia/Jerusalem", city: "Jerusalem", label: "Israel" },
+    { id: "Asia/Amman", city: "Amman", label: "Jordan" },
+    { id: "Asia/Beirut", city: "Beirut", label: "Lebanon" },
+    { id: "Asia/Damascus", city: "Damascus", label: "Syria" },
+    { id: "Asia/Baghdad", city: "Baghdad", label: "Iraq" },
+    { id: "Asia/Riyadh", city: "Riyadh", label: "Saudi Arabia" },
+    { id: "Asia/Riyadh-Jeddah", tz: "Asia/Riyadh", city: "Jeddah", label: "Saudi Arabia" },
+    { id: "Asia/Riyadh-Mecca", tz: "Asia/Riyadh", city: "Mecca", label: "Saudi Arabia" },
+    { id: "Asia/Kuwait", city: "Kuwait City", label: "Kuwait" },
+    { id: "Asia/Qatar", city: "Doha", label: "Qatar" },
+    { id: "Asia/Bahrain", city: "Manama", label: "Bahrain" },
+    { id: "Asia/Dubai", city: "Dubai", label: "United Arab Emirates" },
+    { id: "Asia/Muscat", city: "Muscat", label: "Oman" },
+    { id: "Asia/Aden", city: "Sana'a", label: "Yemen" },
+    { id: "Asia/Tehran", city: "Tehran", label: "Iran" },
+    // Central & South Asia
+    { id: "Asia/Baku", city: "Baku", label: "Azerbaijan" },
+    { id: "Asia/Yerevan", city: "Yerevan", label: "Armenia" },
+    { id: "Asia/Tbilisi", city: "Tbilisi", label: "Georgia" },
+    { id: "Asia/Ashgabat", city: "Ashgabat", label: "Turkmenistan" },
+    { id: "Asia/Almaty", city: "Almaty", label: "Kazakhstan" },
+    { id: "Asia/Bishkek", city: "Bishkek", label: "Kyrgyzstan" },
+    { id: "Asia/Tashkent", city: "Tashkent", label: "Uzbekistan" },
+    { id: "Asia/Dushanbe", city: "Dushanbe", label: "Tajikistan" },
+    { id: "Asia/Kabul", city: "Kabul", label: "Afghanistan" },
+    { id: "Asia/Karachi", city: "Karachi", label: "Pakistan" },
+    { id: "Asia/Karachi-Lahore", tz: "Asia/Karachi", city: "Lahore", label: "Pakistan" },
+    { id: "Asia/Karachi-Islamabad", tz: "Asia/Karachi", city: "Islamabad", label: "Pakistan" },
+    { id: "Asia/Karachi-Rawalpindi", tz: "Asia/Karachi", city: "Rawalpindi", label: "Pakistan" },
+    { id: "Asia/Karachi-Faisalabad", tz: "Asia/Karachi", city: "Faisalabad", label: "Pakistan" },
+    { id: "Asia/Karachi-Peshawar", tz: "Asia/Karachi", city: "Peshawar", label: "Pakistan" },
+    { id: "Asia/Karachi-Multan", tz: "Asia/Karachi", city: "Multan", label: "Pakistan" },
+    { id: "Asia/Karachi-Quetta", tz: "Asia/Karachi", city: "Quetta", label: "Pakistan" },
+    { id: "Asia/Kolkata", city: "New Delhi", label: "India" },
+    { id: "Asia/Kolkata-Mumbai", tz: "Asia/Kolkata", city: "Mumbai", label: "India" },
+    { id: "Asia/Kolkata-Bangalore", tz: "Asia/Kolkata", city: "Bangalore", label: "India" },
+    { id: "Asia/Kolkata-Chennai", tz: "Asia/Kolkata", city: "Chennai", label: "India" },
+    { id: "Asia/Kolkata-Kolkata", tz: "Asia/Kolkata", city: "Kolkata", label: "India" },
+    { id: "Asia/Kolkata-Hyderabad", tz: "Asia/Kolkata", city: "Hyderabad", label: "India" },
+    { id: "Asia/Kathmandu", city: "Kathmandu", label: "Nepal" },
+    { id: "Asia/Thimphu", city: "Thimphu", label: "Bhutan" },
+    { id: "Asia/Dhaka", city: "Dhaka", label: "Bangladesh" },
+    { id: "Asia/Colombo", city: "Colombo", label: "Sri Lanka" },
+    { id: "Indian/Maldives", city: "Malé", label: "Maldives" },
+    // Southeast & East Asia
+    { id: "Asia/Yangon", city: "Yangon", label: "Myanmar" },
+    { id: "Asia/Bangkok", city: "Bangkok", label: "Thailand" },
+    { id: "Asia/Vientiane", city: "Vientiane", label: "Laos" },
+    { id: "Asia/Phnom_Penh", city: "Phnom Penh", label: "Cambodia" },
+    { id: "Asia/Ho_Chi_Minh", city: "Ho Chi Minh City", label: "Vietnam" },
+    { id: "Asia/Kuala_Lumpur", city: "Kuala Lumpur", label: "Malaysia" },
+    { id: "Asia/Singapore", city: "Singapore", label: "Singapore" },
+    { id: "Asia/Jakarta", city: "Jakarta", label: "Indonesia" },
+    { id: "Asia/Makassar", city: "Makassar", label: "Indonesia" },
+    { id: "Asia/Makassar-Bali", tz: "Asia/Makassar", city: "Denpasar (Bali)", label: "Indonesia" },
+    { id: "Asia/Jayapura", city: "Jayapura", label: "Indonesia" },
+    { id: "Asia/Manila", city: "Manila", label: "Philippines" },
+    { id: "Asia/Brunei", city: "Bandar Seri Begawan", label: "Brunei" },
+    { id: "Asia/Shanghai", city: "Shanghai", label: "China" },
+    { id: "Asia/Shanghai-Beijing", tz: "Asia/Shanghai", city: "Beijing", label: "China" },
+    { id: "Asia/Shanghai-Guangzhou", tz: "Asia/Shanghai", city: "Guangzhou", label: "China" },
+    { id: "Asia/Shanghai-Shenzhen", tz: "Asia/Shanghai", city: "Shenzhen", label: "China" },
+    { id: "Asia/Shanghai-Chengdu", tz: "Asia/Shanghai", city: "Chengdu", label: "China" },
+    { id: "Asia/Hong_Kong", city: "Hong Kong", label: "Hong Kong" },
+    { id: "Asia/Macau", city: "Macau", label: "Macau" },
+    { id: "Asia/Taipei", city: "Taipei", label: "Taiwan" },
+    { id: "Asia/Tokyo", city: "Tokyo", label: "Japan" },
+    { id: "Asia/Tokyo-Osaka", tz: "Asia/Tokyo", city: "Osaka", label: "Japan" },
+    { id: "Asia/Tokyo-Yokohama", tz: "Asia/Tokyo", city: "Yokohama", label: "Japan" },
+    { id: "Asia/Seoul", city: "Seoul", label: "South Korea" },
+    { id: "Asia/Pyongyang", city: "Pyongyang", label: "North Korea" },
+    { id: "Asia/Ulaanbaatar", city: "Ulaanbaatar", label: "Mongolia" },
+    // Oceania & Pacific
+    { id: "Australia/Perth", city: "Perth", label: "Australia" },
+    { id: "Australia/Darwin", city: "Darwin", label: "Australia" },
+    { id: "Australia/Adelaide", city: "Adelaide", label: "Australia" },
+    { id: "Australia/Brisbane", city: "Brisbane", label: "Australia" },
+    { id: "Australia/Sydney", city: "Sydney", label: "Australia" },
+    { id: "Australia/Melbourne", city: "Melbourne", label: "Australia" },
+    { id: "Pacific/Auckland", city: "Auckland", label: "New Zealand" },
+    { id: "Pacific/Fiji", city: "Suva", label: "Fiji" },
+    { id: "Pacific/Port_Moresby", city: "Port Moresby", label: "Papua New Guinea" },
+    { id: "Pacific/Guadalcanal", city: "Honiara", label: "Solomon Islands" },
+    { id: "Pacific/Noumea", city: "Nouméa", label: "New Caledonia" },
+    { id: "Pacific/Tongatapu", city: "Nuku'alofa", label: "Tonga" },
+    { id: "Pacific/Apia", city: "Apia", label: "Samoa" },
+    { id: "Pacific/Guam", city: "Hagåtña", label: "Guam" },
+    { id: "Pacific/Tahiti", city: "Papeete", label: "French Polynesia" }
   ];
   function findZone(id){ return zones.find(z => z.id === id); }
   function resolveTz(id){ const z = findZone(id); return z ? (z.tz || z.id) : id; }
@@ -571,43 +883,134 @@
     });
   }
 
-  /* ================= add city ================= */
-  const addCitySelect = document.getElementById("add-city-select");
-  function renderAddCityOptions(){
-    addCitySelect.innerHTML = "";
-    zones.filter(z => !state.pinned.includes(z.id)).forEach(z => {
-      const opt = document.createElement("option");
-      opt.value = z.id;
-      opt.textContent = `${z.city} — ${z.label}`;
-      addCitySelect.appendChild(opt);
-    });
+  /* ================= searchable city combo (shared widget) ================= */
+  function filterZones(query, excludeIds){
+    const q = query.trim().toLowerCase();
+    let list = zones;
+    if (excludeIds && excludeIds.length) list = list.filter(z => !excludeIds.includes(z.id));
+    if (q) {
+      list = list.filter(z =>
+        z.city.toLowerCase().includes(q) ||
+        z.label.toLowerCase().includes(q) ||
+        z.id.toLowerCase().includes(q)
+      );
+      list = list.slice().sort((a, b) => {
+        const aStarts = a.city.toLowerCase().startsWith(q) ? 0 : 1;
+        const bStarts = b.city.toLowerCase().startsWith(q) ? 0 : 1;
+        return aStarts - bStarts;
+      });
+    }
+    return list.slice(0, 60);
   }
-  document.getElementById("add-city-btn").addEventListener("click", () => {
-    const val = addCitySelect.value;
-    if (val && !state.pinned.includes(val)) {
-      state.pinned.push(val);
-      renderClockGrid();
-      renderAddCityOptions();
+
+  function createZoneCombo({ comboEl, inputEl, dropdownEl, initialId, excludeIds, onSelect, keepSelection }){
+    let currentId = initialId || null;
+
+    function displayText(id){
+      const z = findZone(id);
+      if (z) return `${z.city} — ${z.label}`;
+      return id || "";
+    }
+    function renderDropdown(query){
+      const excluded = excludeIds ? excludeIds() : [];
+      const list = filterZones(query, excluded);
+      dropdownEl.innerHTML = "";
+      if (!list.length) {
+        dropdownEl.innerHTML = '<div class="search-empty">No matching city or country</div>';
+      } else {
+        list.forEach(z => {
+          const item = document.createElement("div");
+          item.className = "search-item" + (z.id === currentId ? " active" : "");
+          item.innerHTML = `<span class="search-item-city">${z.city}</span><span class="search-item-country">${z.label}</span>`;
+          item.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            if (keepSelection) { currentId = z.id; }
+            inputEl.value = keepSelection ? displayText(z.id) : "";
+            closeDropdown();
+            inputEl.blur();
+            onSelect(z);
+          });
+          dropdownEl.appendChild(item);
+        });
+      }
+      openDropdown();
+    }
+    function openDropdown(){ dropdownEl.classList.add("open"); comboEl.classList.add("open"); }
+    function closeDropdown(){ dropdownEl.classList.remove("open"); comboEl.classList.remove("open"); }
+
+    inputEl.addEventListener("focus", () => {
+      if (keepSelection) inputEl.select();
+      renderDropdown(keepSelection ? "" : inputEl.value);
+    });
+    inputEl.addEventListener("input", () => renderDropdown(inputEl.value));
+    inputEl.addEventListener("blur", () => {
+      setTimeout(() => {
+        closeDropdown();
+        if (keepSelection) inputEl.value = displayText(currentId);
+        else inputEl.value = "";
+      }, 120);
+    });
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const excluded = excludeIds ? excludeIds() : [];
+        const list = filterZones(inputEl.value, excluded);
+        if (list[0]) {
+          if (keepSelection) { currentId = list[0].id; inputEl.value = displayText(currentId); }
+          else inputEl.value = "";
+          closeDropdown();
+          inputEl.blur();
+          onSelect(list[0]);
+        }
+        e.preventDefault();
+      } else if (e.key === "Escape") {
+        closeDropdown();
+        inputEl.blur();
+      }
+    });
+
+    if (keepSelection) inputEl.value = displayText(currentId);
+
+    return {
+      setValue(id){ currentId = id; inputEl.value = displayText(id); comboEl.dataset.value = id || ""; },
+      getValue(){ return currentId; },
+      refreshDropdown(){ if (dropdownEl.classList.contains("open")) renderDropdown(inputEl.value); }
+    };
+  }
+
+  /* ================= add city ================= */
+  const addCityCombo = createZoneCombo({
+    comboEl: document.getElementById("add-city-combo"),
+    inputEl: document.getElementById("add-city-input"),
+    dropdownEl: document.getElementById("add-city-dropdown"),
+    excludeIds: () => state.pinned,
+    keepSelection: false,
+    onSelect(z){
+      if (!state.pinned.includes(z.id)) {
+        state.pinned.push(z.id);
+        renderClockGrid();
+      }
     }
   });
 
   /* ================= converter ================= */
-  const fromZoneSelect = document.getElementById("from-zone");
-  const toZoneSelect = document.getElementById("to-zone");
   const fromDatetimeInput = document.getElementById("from-datetime");
 
-  function populateZoneSelect(select, defaultId){
-    select.innerHTML = "";
-    zones.forEach(z => {
-      const opt = document.createElement("option");
-      opt.value = z.id;
-      opt.textContent = `${z.city} — ${z.label}`;
-      if (z.id === defaultId) opt.selected = true;
-      select.appendChild(opt);
-    });
-  }
-  populateZoneSelect(fromZoneSelect, state.homeTz);
-  populateZoneSelect(toZoneSelect, "Asia/Tokyo");
+  const fromZoneCombo = createZoneCombo({
+    comboEl: document.getElementById("from-zone-combo"),
+    inputEl: document.getElementById("from-zone-input"),
+    dropdownEl: document.getElementById("from-zone-dropdown"),
+    initialId: state.homeTz,
+    keepSelection: true,
+    onSelect(){ runConversion(); }
+  });
+  const toZoneCombo = createZoneCombo({
+    comboEl: document.getElementById("to-zone-combo"),
+    inputEl: document.getElementById("to-zone-input"),
+    dropdownEl: document.getElementById("to-zone-dropdown"),
+    initialId: "Asia/Tokyo",
+    keepSelection: true,
+    onSelect(){ runConversion(); }
+  });
 
   function pad(n){ return String(n).padStart(2, "0"); }
   function nowLocalInputValue(){
@@ -629,8 +1032,9 @@
   }
 
   function runConversion(){
-    const fromTz = fromZoneSelect.value;
-    const toTz = toZoneSelect.value;
+    const fromTz = fromZoneCombo.getValue();
+    const toTz = toZoneCombo.getValue();
+    if (!fromTz || !toTz) return;
     const [datePart, timePart] = fromDatetimeInput.value.split("T");
     if (!datePart || !timePart) return;
     const [y, mo, d] = datePart.split("-").map(Number);
@@ -654,33 +1058,27 @@
     const toZ = findZone(toTz);
 
     document.getElementById("result-time").textContent = timeStr;
-    document.getElementById("result-zone-label").textContent = `${toZ.city} — ${getOffsetLabel(toTz)}`;
+    document.getElementById("result-zone-label").textContent = toZ ? `${toZ.city} — ${getOffsetLabel(toTz)}` : `${toTz} — ${getOffsetLabel(toTz)}`;
     document.getElementById("result-date").textContent = dateStr;
   }
 
-  fromZoneSelect.addEventListener("change", runConversion);
-  toZoneSelect.addEventListener("change", runConversion);
   fromDatetimeInput.addEventListener("input", runConversion);
 
   document.getElementById("swap-btn").addEventListener("click", () => {
-    const f = fromZoneSelect.value;
-    fromZoneSelect.value = toZoneSelect.value;
-    toZoneSelect.value = f;
+    const f = fromZoneCombo.getValue();
+    fromZoneCombo.setValue(toZoneCombo.getValue());
+    toZoneCombo.setValue(f);
     runConversion();
   });
 
   /* ================= home tz select ================= */
-  const homeTzSelect = document.getElementById("home-tz-select");
-  populateZoneSelect(homeTzSelect, state.homeTz);
-  if (!zones.find(z => z.id === state.homeTz)) {
-    const opt = document.createElement("option");
-    opt.value = state.homeTz;
-    opt.textContent = state.homeTz;
-    opt.selected = true;
-    homeTzSelect.appendChild(opt);
-  }
-  homeTzSelect.addEventListener("change", () => {
-    state.homeTz = homeTzSelect.value;
+  const homeTzCombo = createZoneCombo({
+    comboEl: document.getElementById("home-tz-combo"),
+    inputEl: document.getElementById("home-tz-input"),
+    dropdownEl: document.getElementById("home-tz-dropdown"),
+    initialId: state.homeTz,
+    keepSelection: true,
+    onSelect(z){ state.homeTz = z.id; }
   });
 
   /* ================= format toggle ================= */
@@ -711,20 +1109,9 @@
     navMenu.classList.toggle("open");
   });
 
-  /* ================= hamburger menu (mobile) ================= */
-  const hamburgerBtn = document.getElementById("hamburger-btn");
-  const iconRow = document.getElementById("icon-row");
-  hamburgerBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    hamburgerBtn.classList.toggle("open");
-    iconRow.classList.toggle("open");
-  });
-
   document.addEventListener("click", () => {
     navBtn.classList.remove("open");
     navMenu.classList.remove("open");
-    hamburgerBtn.classList.remove("open");
-    iconRow.classList.remove("open");
   });
 
   /* ================= sidebar toggle ================= */
@@ -756,28 +1143,45 @@
     }
   });
 
-  /* ================= keep screen awake ================= */
-  let wakeLock = null;
-  const wakeBtn = document.getElementById("wake-btn");
-  wakeBtn.addEventListener("click", async () => {
-    try {
-      if (!wakeLock) {
-        wakeLock = await navigator.wakeLock.request("screen");
-        wakeBtn.classList.add("active");
-        wakeLock.addEventListener("release", () => wakeBtn.classList.remove("active"));
-      } else {
-        await wakeLock.release();
-        wakeLock = null;
-        wakeBtn.classList.remove("active");
-      }
-    } catch (err) {
-      wakeBtn.title = "Keep screen on (not supported in this browser)";
-    }
+  /* ================= light / dark quick toggle ================= */
+  const pageSurfaces = {
+    dark:  { bg: "#000000", fg: "#ffffff", panelBg: "#0a0a0a", cardBg: "#111111", border: "#232323", muted: "#9a9a9a",
+             surface1: "#131313", surface2: "#101010", hoverBg: "#1c1c1c", switchOff: "#333333",
+             inputBg: "#161616", textSecondary: "#eeeeee", textTertiary: "#cccccc" },
+    light: { bg: "#f4f4f4", fg: "#111111", panelBg: "#ffffff", cardBg: "#ffffff", border: "#dddddd", muted: "#666666",
+             surface1: "#eeeeee", surface2: "#ffffff", hoverBg: "#e2e2e2", switchOff: "#cccccc",
+             inputBg: "#eeeeee", textSecondary: "#1a1a1a", textTertiary: "#333333" }
+  };
+  let isLight = false;
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+  function applyPageMode(mode){
+    isLight = mode === "light";
+    const s = pageSurfaces[mode];
+    const root = document.documentElement.style;
+    root.setProperty("--bg", s.bg);
+    root.setProperty("--fg", s.fg);
+    root.setProperty("--panel-bg", s.panelBg);
+    root.setProperty("--card-bg", s.cardBg);
+    root.setProperty("--border", s.border);
+    root.setProperty("--muted", s.muted);
+    root.setProperty("--surface-1", s.surface1);
+    root.setProperty("--surface-2", s.surface2);
+    root.setProperty("--hover-bg", s.hoverBg);
+    root.setProperty("--switch-off", s.switchOff);
+    root.setProperty("--input-bg", s.inputBg);
+    root.setProperty("--text-secondary", s.textSecondary);
+    root.setProperty("--text-tertiary", s.textTertiary);
+    document.body.style.background = s.bg;
+    document.body.style.color = s.fg;
+    themeToggleBtn.classList.toggle("active", isLight);
+    themeToggleBtn.classList.toggle("is-light", isLight);
+  }
+  themeToggleBtn.addEventListener("click", () => {
+    applyPageMode(isLight ? "dark" : "light");
   });
 
   /* ================= init ================= */
   renderClockGrid();
-  renderAddCityOptions();
   runConversion();
   setInterval(tickClocks, 1000);
 </script>
